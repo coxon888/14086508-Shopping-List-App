@@ -26,14 +26,26 @@
         quantityChosen = $("#spin").val();
         $("#spin").val(1);
         chosenItems[itemsChosen] = quantityChosen;
-        alert(JSON.stringify(chosenItems));
+        //alert(JSON.stringify(chosenItems));
+
+        // save data locally
+        localStorage.setItem(itemsChosen,quantityChosen);
+        alert(itemsChosen + ' : ' + localStorage.getItem(itemsChosen));
+
     }
 
     function gotoShowChosenItems()
     {
-        $.mobile.changePage("#showChosenItems");
+        // retrieve data from local storage and populate the local variable
+        for (var i = 0; i < localStorage.length; i++) {
+          chosenItems[localStorage.key(i)] = localStorage.getItem(localStorage.key(i));
+        }
+
+        $.mobile.changePage("#showChosenItems"); 
         $("#allSavedItems").text(JSON.stringify(chosenItems))
         output = "";
+
+        // display list of chosen Items
         for (var key in chosenItems) {
             output += key + " -> " + chosenItems[key] + "<hr/>";
         }
