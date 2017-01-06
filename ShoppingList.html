@@ -52,6 +52,14 @@
         $("#allSavedItems").html(output);
     }
 
+    function clearAllItems() {
+      chosenItems = null;
+      localStorage.clear();
+      location.reload(); // refresh the current page     
+    }
+
+
+
 </script>
 
 
@@ -94,6 +102,7 @@
 
 <div data-role="page" id="showChosenItems">
   <div data-role="main" class="ui-content">
+    <button onclick="clearAllItems()">Clear All</button>
     <div id="allSavedItems">
     </div>
   </div>
