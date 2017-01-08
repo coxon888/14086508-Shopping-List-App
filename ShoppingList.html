@@ -9,6 +9,10 @@
 </head>
 <body>
 
+<style>
+
+</style>
+
 <script>
     var chosenItems = {};
 
@@ -26,30 +30,33 @@
         quantityChosen = $("#spin").val();
         $("#spin").val(1);
         chosenItems[itemsChosen] = quantityChosen;
-        //alert(JSON.stringify(chosenItems));
 
         // save data locally
         localStorage.setItem(itemsChosen,quantityChosen);
-        //alert(itemsChosen + ' : ' + localStorage.getItem(itemsChosen));
 
+    }
+
+    function clearListView() {
+      $("#savedItems").empty();
     }
 
     function gotoShowChosenItems()
     {
+        
         // retrieve data from local storage and populate the local variable
         for (var i = 0; i < localStorage.length; i++) {
           chosenItems[localStorage.key(i)] = localStorage.getItem(localStorage.key(i));
         }
 
         $.mobile.changePage("#showChosenItems"); 
-        $("#allSavedItems").text(JSON.stringify(chosenItems))
-        output = "";
 
         // display list of chosen Items
         for (var key in chosenItems) {
-            output += key + " -> " + chosenItems[key] + "<hr/>";
+            listData = key + " : " + chosenItems[key];
+            $('<li>').append('<a href="#">' + listData + '</a></li>').appendTo('#savedList');            
+            $("#savedList").listview("refresh");
         }
-        $("#allSavedItems").html(output);
+        //$("#allSavedItems").html(output);
     }
 
     function clearAllItems() {
@@ -59,10 +66,10 @@
     }
 
     function gotoItemsList() { // go back to page to add items
-      $.mobile.changePage("#shoppingList")
+      $.mobile.changePage("#shoppingList");
+      clearListView(); // empty the list to prevent duplicates
+      location.reload();
     }
-
-
 
 </script>
 
@@ -107,9 +114,13 @@
 
 <div data-role="page" id="showChosenItems">
   <div data-role="main" class="ui-content">
-    <button onclick="clearAllItems()">Clear All</button>
-    <div id="allSavedItems"></div>
-    <button onclick="gotoItemsList()">Add</button>
+    <div id="allSavedItems">
+      <ul data-role="listview" data-inset="true" id="savedList">
+        <li><label><input type="checkbox" name="1" data-mini="true">TEST</label></li>
+      </ul>
+    </div>
+    <button onclick="gotoItemsList()">Add More</button>
+    <button onclick="clearAllItems()" style="background:darkred; color: white;">Clear All</button>
   </div>
 </div>
 
