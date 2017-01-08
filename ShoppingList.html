@@ -14,8 +14,13 @@
 </style>
 
 <script>
-    var chosenItems = {};
 
+    // GLOBAL VARIABLES
+    var chosenItems = {}; // used to store all items and their quantities
+
+    // FUNCTIONS
+
+    // navigate to new page and pass the item name
     function gotoChooseQuantity(obj)
     {
         $.mobile.changePage("#chooseQuantity");
@@ -23,27 +28,29 @@
         $("#itemName").text(itemsChosen);
     }
 
+    // save the item to the array and to local storage
     function save(obj)
     {
         $.mobile.changePage("#shoppingList");
         itemsChosen = $("#itemName").text();
-        quantityChosen = $("#spin").val();
-        $("#spin").val(1);
+        quantityChosen = $("#spin").val(); // take the value form the spinner
         chosenItems[itemsChosen] = quantityChosen;
-
-        // save data locally
-        localStorage.setItem(itemsChosen,quantityChosen);
+        $("#spin").val(1); // reset the spinner
+        
+        localStorage.setItem(itemsChosen,quantityChosen); // save data locally
 
     }
 
+    // empty the list of chosen/saved items to prevent duplicates
     function clearListView() {
       $("#savedItems").empty();
     }
 
+    // navigate to chosen/saved items and populate list to display
     function gotoShowChosenItems()
     {
         
-        // retrieve data from local storage and populate the local variable
+        // retrieve data from local storage and populate the global variable
         for (var i = 0; i < localStorage.length; i++) {
           chosenItems[localStorage.key(i)] = localStorage.getItem(localStorage.key(i));
         }
@@ -53,27 +60,42 @@
         // display list of chosen Items
         for (var key in chosenItems) {
             listData = key + " : " + chosenItems[key];
-            $('<li>').append('<a href="#">' + listData + '</a></li>').appendTo('#savedList');            
+            $('<li>').append('<a>' + listData + '</a></li>').appendTo('#savedList'); // generate html and append       
             $("#savedList").listview("refresh");
         }
-        //$("#allSavedItems").html(output);
     }
 
+    // delete all items including from local storage
     function clearAllItems() {
       chosenItems = null;
       localStorage.clear();
-      location.reload(); // refresh the current page     
+      location.reload(); // refresh the current page  
     }
 
+    // go back to first page and clear any lists
     function gotoItemsList() { // go back to page to add items
       $.mobile.changePage("#shoppingList");
       clearListView(); // empty the list to prevent duplicates
       location.reload();
     }
 
+    // move in to shoping mode and populate checkboxes
+    function gotoShoppingMode() {
+      $.mobile.changePage("#shoppingMode");
+
+      // generate the html and append to checkbox
+      for (var key in chosenItems) {
+          listData = key + " : " + chosenItems[key];
+          $("#checkbox").append('<input type="checkbox" name="' + key + '" id="id' + key + '"><label for="id' + key + '">' + listData + '</label>');
+      }
+    
+      $("#checkbox").checkboxradio().trigger('create'); // refresh the checkbox to stlye correctly
+
+    }
+
 </script>
 
-
+<!-- display the first page with a list of items to choose from -->
 <div data-role="page" id="shoppingList">
   <div data-role="main" class="ui-content">
     <h2>Shopping List</h2>
@@ -100,27 +122,47 @@
   </div>
 </div> 
 
+<!-- goto this page when an item is selected, choose quantity -->
 <div data-role="page" id="chooseQuantity">
   <div data-role="main" class="ui-content">
-    <div id="itemName"></div>
+    <h2>Choose Quantity</h2>
+    <h3><div id="itemName"></div></h3>
     <div class="ui-field-contain">
     <label for="spin"></label>
-    <input type="text" data-role="spinbox" name="spin" id="spin" value="1" min="0" max="100" />
+    <input type="text" data-role="spinbox" name="spin" id="spin" value="1" min="1" max="100" />
     </div>
     <button onclick="save()">Save</button>
     <button onclick="gotoShowChosenItems()">Show Chosen Items</button>
   </div>
 </div>
 
+<!-- show the list of chosen/saved items -->
 <div data-role="page" id="showChosenItems">
   <div data-role="main" class="ui-content">
+    <h2>Saved Items</h2>
     <div id="allSavedItems">
       <ul data-role="listview" data-inset="true" id="savedList">
-        <li><label><input type="checkbox" name="1" data-mini="true">TEST</label></li>
       </ul>
     </div>
-    <button onclick="gotoItemsList()">Add More</button>
+    <button onclick="gotoItemsList()">Add More Items</button>
+    <button onclick="gotoShoppingMode()" style="background: green; color: white">Shopping Mode</button>
     <button onclick="clearAllItems()" style="background:darkred; color: white;">Clear All</button>
+  </div>
+</div>
+
+<!-- once all items have been selected, move into shopping mode -->
+<div data-role="page" id="shoppingMode">
+  <div data-role="main" class="ui-content">
+    <div id="allSavedItemsCheckbox">
+      <form>
+        <fieldset data-role="controlgroup" data-iconpos="right" id="checkbox">
+            <legend><h2>Your Shopping List</h2></legend>
+        </fieldset>
+      </form>
+    </div>
+    <div>
+      <button onclick="gotoItemsList()">Exit</button>
+    </div>   
   </div>
 </div>
 
