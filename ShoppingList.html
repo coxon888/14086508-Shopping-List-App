@@ -98,9 +98,9 @@
 
     function saveCustomItem() {
         newItemName = $("#newItem").val();
-        quantityChosen = $("#spin").val(); // take the value form the spinner
+        quantityChosen = $("#spin2").val(); // take the value form the spinner
         chosenItems[newItemName] = quantityChosen;
-        $("#spin").val(1); // reset the spinner
+        $("#spin2").val(1); // reset the spinner
         
         localStorage.setItem(newItemName,quantityChosen); // save data locally
 
