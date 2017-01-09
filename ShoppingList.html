@@ -90,6 +90,21 @@
       }
     
       $("#checkbox").checkboxradio().trigger('create'); // refresh the checkbox to stlye correctly
+    }
+
+    function gotoAddCustomItem() {
+      $.mobile.changePage("#addCustomItem");
+    }
+
+    function saveCustomItem() {
+        newItemName = $("#newItem").val();
+        quantityChosen = $("#spin").val(); // take the value form the spinner
+        chosenItems[newItemName] = quantityChosen;
+        $("#spin").val(1); // reset the spinner
+        
+        localStorage.setItem(newItemName,quantityChosen); // save data locally
+
+        $.mobile.changePage("#shoppingList");
 
     }
 
@@ -100,6 +115,7 @@
   <div data-role="main" class="ui-content">
     <h2>Shopping List</h2>
     <button onclick="gotoShowChosenItems()">View Saved Items</button>
+    <button onclick="gotoAddCustomItem()">Add Custom Item</button>
     <form class="ui-filterable">
       <input id="myFilter" data-type="search" placeholder="Search for items...">
     </form>
@@ -131,7 +147,7 @@
     <label for="spin"></label>
     <input type="text" data-role="spinbox" name="spin" id="spin" value="1" min="1" max="100" />
     </div>
-    <button onclick="save()">Save</button>
+    <button onclick="save()" style="background: green; color: white">Save</button>
     <button onclick="gotoShowChosenItems()">Show Chosen Items</button>
   </div>
 </div>
@@ -163,6 +179,22 @@
     <div>
       <button onclick="gotoItemsList()">Exit</button>
     </div>   
+  </div>
+</div>
+
+<div data-role="page" id="addCustomItem">
+  <div data-role="main" class="ui-content">
+    <h2>Add Custom Item</h2>
+    <form method="post">
+      <label for="newItem">Item Name:</label>
+      <input type="text" name="newItem" id="newItem">
+    </form>
+    <div class="ui-field-contain">
+    <label for="spin">Quantity</label>
+    <input type="text" data-role="spinbox" name="spin" id="spin2" value="1" min="1" max="100" />
+    </div>
+    <button onclick="saveCustomItem()" style="background: green; color: white">Save</button>
+    <button onclick="gotoShowChosenItems()">Show Chosen Items</button>
   </div>
 </div>
 
